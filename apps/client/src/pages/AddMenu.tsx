@@ -3,6 +3,7 @@ import { Card } from "../components/Card";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import MenuForm from "../components/MenuForm";
+import api from "../service/api";
 
 function AddMenu() {
   const { Title } = Typography;
@@ -10,21 +11,20 @@ function AddMenu() {
   const [form] = Form.useForm();
 
   const handleSubmit = async () => {
-    const response = await fetch("api/menu", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form.getFieldsValue()), // Convierte formValues a JSON
-    });
+    try {
+      await api.fetchApi({
+        url: `/api/menu`,
+        method: "POST",
+        body: form.getFieldsValue(),
+      });
 
-    if (response.ok) {
       notification.success({
         message: "Menu creado",
         description: "El menu se ha creado correctamente correctamente",
       });
+
       navigate("/");
-    } else {
+    } catch (error) {
       notification.error({
         message: "Error",
         description: "Ha ocurrido un error al crear el menu",

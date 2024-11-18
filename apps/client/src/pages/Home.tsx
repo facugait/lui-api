@@ -11,7 +11,6 @@ function Home() {
   const [menu, setMenu] = useState<MenuType | undefined>();
 
   const initData = async () => {
-    // setMenus(await fetch("/api/menu").then((res) => res.json()));
     setMenus(
       await api.fetchApi({
         url: "/api/menu",
@@ -24,43 +23,47 @@ function Home() {
     initData();
   }, []);
 
-  const handleChooseMenu = async () => {
-    if (menu) {
-      // const response = await fetch(`/api/menu/${menu.id}`, {
-      //   method: "PATCH",
-      //   credentials: "same-origin",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ isDaysMenu: true }),
-      // });
-
-      // const prevMenu = await api.fetchApi({
-      //   url: `/api/menu?isDaysMenu=true`,
-      //   method: "GET",
-      // });
-
-      const responses = [
-        // api.fetchApi({
-        //   url: `/api/menu/${prevMenu[0].id}`,
-        //   method: "PATCH",
-        //   body: JSON.stringify({ isDaysMenu: true }),
-        // }),
+  const clearPreviousMenu = async (menus: MenuType[]) => {
+    Promise.all(
+      menus.map((menu) =>
         api.fetchApi({
           url: `/api/menu/${menu.id}`,
           method: "PATCH",
-          body: { isDaysMenu: true },
-        }),
-      ];
+          body: { isDaysMenu: false },
+        })
+      )
+    );
+  };
 
-      if ((await Promise.all(responses)).every((res) => res.status === 200)) {
-        notification.success({
-          message: "Menu del dia actualizado",
-          description: "El menu del dia ha sido actualizado correctamente",
+  const handleChooseMenu = async () => {
+    if (menu) {
+      try {
+        const prevMenus = await api.fetchApi<MenuType[]>({
+          url: `/api/menu?isDaysMenu=true`,
+          method: "GET",
         });
 
-        initData();
+        clearPreviousMenu(prevMenus);
+
+        await api.fetchApi({
+          url: `/api/menu/${menu.id}`,
+          method: "PATCH",
+          body: { isDaysMenu: true },
+        });
+
+        notification.success({
+          message: "Menu del dia",
+          description: "Menu del dia actualizado",
+        });
+      } catch (error) {
+        notification.error({
+          message: "Error",
+          description:
+            "Ocurrio un error al intentar actualizar el menu del dia",
+        });
       }
+
+      initData();
     }
   };
 
