@@ -26,6 +26,8 @@ export class AuthController {
     const authReslut = await this.authService.authenticate(input);
     response.cookie('user_token', authReslut.accessToken, {
       expires: new Date(Date.now() + 3600000),
+      httpOnly: true,
+      sameSite: 'strict',
     });
     return authReslut;
   }
