@@ -7,19 +7,19 @@ import {
 } from "react";
 import Cookies from "js-cookie";
 import { notification } from "antd";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import api from "../service/api";
 
 interface AuthProviderProps extends PropsWithChildren {
   initialUser?: User;
 }
 
 interface User {
-  userId?: string;
+  userId?: number;
   username?: string;
 }
 
 interface AuthProviderState {
-  token?: string;
   user?: User;
   loading?: boolean;
 }
@@ -37,6 +37,7 @@ interface AuthProviderAction {
 interface ContextState extends AuthProviderState {
   login: (username: string, password: string) => void;
   logout: () => void;
+  reloadUser: () => void;
 }
 
 const AuthContext = createContext<ContextState | undefined>(undefined);
@@ -47,17 +48,12 @@ const authStateReducer: Reducer<AuthProviderState, AuthProviderAction> = (
 ) => {
   switch (action.type) {
     case ActionType.LOGIN:
-      if (!action.payload.token) {
-        throw new Error("Token must be defined");
-      }
-
       if (!action.payload.user) {
         throw new Error("User must be defined");
       }
 
       return {
         ...state,
-        token: action.payload.token,
         user: action.payload.user,
         loading: false,
       };
@@ -68,14 +64,14 @@ const authStateReducer: Reducer<AuthProviderState, AuthProviderAction> = (
         ...state,
         token: undefined,
         user: undefined,
+        loading: false,
       };
   }
 };
 
 export const AuthProvider = ({ children, initialUser }: AuthProviderProps) => {
-  const [{ token, user, loading }, dispatch] = useReducer(authStateReducer, {
-    token: "",
-    user: undefined,
+  const [{ user, loading }, dispatch] = useReducer(authStateReducer, {
+    user: initialUser,
     loading: true,
   });
 
@@ -102,7 +98,6 @@ export const AuthProvider = ({ children, initialUser }: AuthProviderProps) => {
     dispatch({
       type: ActionType.LOGIN,
       payload: {
-        token: data.accessToken,
         user: {
           userId: data.userId,
           username: data.username,
@@ -117,7 +112,6 @@ export const AuthProvider = ({ children, initialUser }: AuthProviderProps) => {
     dispatch({
       type: ActionType.LOGOUT,
       payload: {
-        token: undefined,
         user: {
           userId: undefined,
           username: undefined,
@@ -126,8 +120,37 @@ export const AuthProvider = ({ children, initialUser }: AuthProviderProps) => {
     });
   };
 
+  const reloadUser = async () => {
+    try {
+      const response = await api.fetchApi<User>({
+        url: "/api/auth/me",
+        method: "GET",
+      });
+
+      dispatch({
+        type: ActionType.LOGIN,
+        payload: {
+          user: {
+            userId: response.userId,
+            username: response.username,
+          },
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: ActionType.LOGOUT,
+        payload: {
+          user: {
+            userId: undefined,
+            username: undefined,
+          },
+        },
+      });
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ token, user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, reloadUser }}>
       {children}
     </AuthContext.Provider>
   );

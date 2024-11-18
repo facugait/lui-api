@@ -1,4 +1,3 @@
-import { useMemo, createContext } from "react";
 import "./App.css";
 import Home from "./pages/Home";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -7,11 +6,10 @@ import AddMenu from "./pages/AddMenu";
 import Login from "./pages/Login";
 import { Header } from "./components/Header";
 import Title from "antd/es/typography/Title";
-import { Flex, Layout, notification } from "antd";
+import { Flex, Layout } from "antd";
 import styled from "styled-components";
-import { AuthProvider } from "./contexts/auth";
-
-const Context = createContext({ name: "Default" });
+import { AuthProvider, useAuth } from "./contexts/auth";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
 
 const StyledHeader = styled(Layout.Header)`
   display: flex;
@@ -28,39 +26,34 @@ const StyledContent = styled(Layout.Content)`
 `;
 
 function App() {
-  const [_, contextHolder] = notification.useNotification();
-
-  const contextValue = useMemo(() => ({ name: "Api LUI" }), []);
-
   return (
     <Router>
       <AuthProvider>
-        <Context.Provider value={contextValue}>
-          {contextHolder}
-          <Layout>
-            <StyledHeader>
-              <Header
-                logo={
-                  <Flex justify="center" align="center">
-                    <img
-                      style={{ height: "76px", marginRight: "8px" }}
-                      src="logo.png"
-                    />
-                    <Title style={{ margin: "10px" }}>Lui Admin</Title>
-                  </Flex>
-                }
-              />
-            </StyledHeader>
-            <StyledContent>
-              <Routes>
+        <Layout>
+          <StyledHeader>
+            <Header
+              logo={
+                <Flex justify="center" align="center">
+                  <img
+                    style={{ height: "76px", marginRight: "8px" }}
+                    src="logo.png"
+                  />
+                  <Title style={{ margin: "10px" }}>Lui Admin</Title>
+                </Flex>
+              }
+            />
+          </StyledHeader>
+          <StyledContent>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route element={<ProtectedRoutes />}>
                 <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
                 <Route path="/add" element={<AddMenu />} />
                 <Route path="/edit/:id" element={<EditMenu />} />
-              </Routes>
-            </StyledContent>
-          </Layout>
-        </Context.Provider>
+              </Route>
+            </Routes>
+          </StyledContent>
+        </Layout>
       </AuthProvider>
     </Router>
   );
