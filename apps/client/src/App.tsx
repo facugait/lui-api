@@ -10,6 +10,7 @@ import { Flex, Layout } from "antd";
 import styled from "styled-components";
 import { AuthProvider, useAuth } from "./contexts/auth";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
+import ProtectedLogin from "./utils/ProtectedLogin";
 
 const StyledHeader = styled(Layout.Header)`
   display: flex;
@@ -45,7 +46,9 @@ function App() {
           </StyledHeader>
           <StyledContent>
             <Routes>
-              <Route path="/login" element={<Login />} />
+              <Route element={<ProtectedLogin />}>
+                <Route path="/login" element={<Login />} />
+              </Route>
               <Route element={<ProtectedRoutes />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/add" element={<AddMenu />} />
