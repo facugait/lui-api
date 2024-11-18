@@ -9,9 +9,9 @@ import MenuForm from "../components/MenuForm";
 
 function EditMenu() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [data, setData] = useState<MenuType>();
   const { Title } = Typography;
-  const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const handleSubmit = async () => {
@@ -76,15 +76,6 @@ function EditMenu() {
     );
   }
 
-  const StyledContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: column;
-    min-width: 650px;
-    padding: 0 20px;
-  `;
-
   return (
     data && (
       <Card>
@@ -96,5 +87,14 @@ function EditMenu() {
     )
   );
 }
+
+const StyledContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  min-width: 650px;
+  padding: 0 20px;
+`;
 
 export default EditMenu;

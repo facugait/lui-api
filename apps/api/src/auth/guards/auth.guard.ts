@@ -12,20 +12,14 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const authorization = request.headers['authorization'];
+    const authCookie = request.cookies['user_token'];
 
-    if (!authorization) {
-      throw new UnauthorizedException('Authorization header is required');
-    }
-
-    const token = authorization.split(' ')[1];
-
-    if (!token) {
-      throw new UnauthorizedException();
+    if (!authCookie) {
+      throw new UnauthorizedException('Authorization cookie is required');
     }
 
     try {
-      const jwtPayload = await this.jwtService.verifyAsync(token);
+      const jwtPayload = await this.jwtService.verifyAsync(authCookie);
       request.user = {
         userId: jwtPayload.sub,
         username: jwtPayload.username,

@@ -74,8 +74,6 @@ export const MenusTable = ({ data, onMenuSelected }: MenusTableProps) => {
     },
   };
 
-  console.log(data);
-
   return (
     <StyledTable
       rowKey={"id"}

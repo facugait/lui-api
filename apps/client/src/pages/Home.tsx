@@ -4,13 +4,20 @@ import { MenusTable } from "../components/MenusTable";
 import { Card } from "../components/Card";
 import { MenuType } from "../interfaces";
 import { Link } from "react-router-dom";
+import api from "../service/api";
 
 function Home() {
   const [menus, setMenus] = useState<MenuType[]>([]);
   const [menu, setMenu] = useState<MenuType | undefined>();
 
   const initData = async () => {
-    setMenus(await fetch("/api/menu").then((res) => res.json()));
+    // setMenus(await fetch("/api/menu").then((res) => res.json()));
+    setMenus(
+      await api.fetchApi({
+        url: "/api/menu",
+        method: "GET",
+      })
+    );
   };
 
   useEffect(() => {
@@ -19,27 +26,36 @@ function Home() {
 
   const handleChooseMenu = async () => {
     if (menu) {
-      const response = await fetch(`/api/menu/${menu.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ isDaysMenu: true }),
-      });
+      // const response = await fetch(`/api/menu/${menu.id}`, {
+      //   method: "PATCH",
+      //   credentials: "same-origin",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ isDaysMenu: true }),
+      // });
 
-      const restOfTheMenus = menus.filter((m: MenuType) => m.id !== menu.id);
+      // const prevMenu = await api.fetchApi({
+      //   url: `/api/menu?isDaysMenu=true`,
+      //   method: "GET",
+      // });
 
-      const promises = restOfTheMenus.map((m: MenuType) =>
-        fetch(`/api/menu/${m.id}`, {
+      const responses = [
+        // api.fetchApi({
+        //   url: `/api/menu/${prevMenu[0].id}`,
+        //   method: "PATCH",
+        //   body: JSON.stringify({ isDaysMenu: true }),
+        // }),
+        api.fetchApi({
+          url: `/api/menu/${menu.id}`,
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ isDaysMenu: false }),
-        })
-      );
+          body: { isDaysMenu: true },
+        }),
+      ];
 
-      if ((await Promise.all(promises)).every((res) => res.ok) && response.ok) {
+      if (
+        (await Promise.all(responses)).every((res: any) => res.status === 200)
+      ) {
         notification.success({
           message: "Menu del dia actualizado",
           description: "El menu del dia ha sido actualizado correctamente",
