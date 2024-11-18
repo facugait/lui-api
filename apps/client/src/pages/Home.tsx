@@ -53,9 +53,7 @@ function Home() {
         }),
       ];
 
-      if (
-        (await Promise.all(responses)).every((res: any) => res.status === 200)
-      ) {
+      if ((await Promise.all(responses)).every((res) => res.status === 200)) {
         notification.success({
           message: "Menu del dia actualizado",
           description: "El menu del dia ha sido actualizado correctamente",
