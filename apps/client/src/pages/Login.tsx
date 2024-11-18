@@ -14,28 +14,14 @@ const StyledCard = styled(Card)`
 `;
 
 const Login = () => {
-  const { login } = useAuth(); // Asegúrate de tener el contexto de autenticación
+  const { login } = useAuth();
   const [form] = Form.useForm();
 
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    if (login) {
-      // Desestructuramos los valores directamente para pasarlos como parámetros.
-      const { username, password } = values;
-      if (username && password) {
-        login(username, password); // Ahora pasamos los parámetros esperados.
-        console.log("Success:", values);
-      } else {
-        console.error("Faltan credenciales");
-      }
-    } else {
-      console.error("La función de login no está disponible");
+    const { username, password } = values;
+    if (username && password) {
+      login(username, password);
     }
-  };
-
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
-    console.log("Failed:", errorInfo);
   };
 
   return (
@@ -48,7 +34,6 @@ const Login = () => {
           style={{ width: "100%" }}
           initialValues={{ remember: true }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           autoComplete="off"
           form={form}
         >

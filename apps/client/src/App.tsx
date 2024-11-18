@@ -33,8 +33,8 @@ function App() {
   const contextValue = useMemo(() => ({ name: "Api LUI" }), []);
 
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Context.Provider value={contextValue}>
           {contextHolder}
           <Layout>
@@ -61,8 +61,8 @@ function App() {
             </StyledContent>
           </Layout>
         </Context.Provider>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

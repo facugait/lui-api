@@ -7,6 +7,7 @@ import {
 } from "react";
 import Cookies from "js-cookie";
 import { notification } from "antd";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface AuthProviderProps extends PropsWithChildren {
   initialUser?: User;
@@ -34,8 +35,8 @@ interface AuthProviderAction {
 }
 
 interface ContextState extends AuthProviderState {
-  login?: (username: string, password: string) => void;
-  logout?: () => void;
+  login: (username: string, password: string) => void;
+  logout: () => void;
 }
 
 const AuthContext = createContext<ContextState | undefined>(undefined);
@@ -78,6 +79,8 @@ export const AuthProvider = ({ children, initialUser }: AuthProviderProps) => {
     loading: true,
   });
 
+  const navigation = useNavigate();
+
   const login = async (username: string, password: string) => {
     const response = await fetch("api/auth/login", {
       method: "POST",
@@ -106,6 +109,8 @@ export const AuthProvider = ({ children, initialUser }: AuthProviderProps) => {
         },
       },
     });
+
+    navigation("/");
   };
 
   const logout = () => {
