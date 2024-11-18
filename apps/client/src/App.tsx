@@ -8,7 +8,7 @@ import { Header } from "./components/Header";
 import Title from "antd/es/typography/Title";
 import { Flex, Layout } from "antd";
 import styled from "styled-components";
-import { AuthProvider, useAuth } from "./contexts/auth";
+import { AuthProvider } from "./contexts/auth";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import ProtectedLogin from "./utils/ProtectedLogin";
 

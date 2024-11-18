@@ -32,6 +32,17 @@ export class AuthController {
     return authReslut;
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) response: Response) {
+    response.cookie('user_token', '', {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+      sameSite: 'strict',
+    });
+    return { message: 'Logout successfully' };
+  }
+
   @Get('me')
   @UseGuards(AuthGuard)
   getUserInfo(@Request() request) {

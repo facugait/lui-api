@@ -1,6 +1,7 @@
-import { Flex } from "antd";
+import { Button, Flex } from "antd";
 import React from "react";
 import styled from "styled-components";
+import { useAuth } from "../contexts/auth";
 
 const Wrapper = styled.section`
   width: 100%;
@@ -15,9 +16,22 @@ interface Props {
 }
 
 export const Header: React.FC<Props> = ({ logo }) => {
+  const { user, logout } = useAuth();
   return (
-    <Wrapper>
-      <Flex className="header">{logo}</Flex>
-    </Wrapper>
+    Boolean(user) && (
+      <Wrapper>
+        <Flex className="header" align="center" justify="space-around">
+          {logo}
+          <StyledButton type="text" onClick={logout}>
+            Logout
+          </StyledButton>
+        </Flex>
+      </Wrapper>
+    )
   );
 };
+
+const StyledButton = styled(Button)`
+  margin-left: auto;
+  border: 1px solid #ccc;
+`;

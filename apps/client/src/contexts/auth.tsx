@@ -5,7 +5,6 @@ import {
   useContext,
   useReducer,
 } from "react";
-import Cookies from "js-cookie";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import api from "../service/api";
@@ -31,7 +30,7 @@ enum ActionType {
 
 interface AuthProviderAction {
   type: ActionType;
-  payload: Partial<AuthProviderState>;
+  payload?: Partial<AuthProviderState>;
 }
 
 interface ContextState extends AuthProviderState {
@@ -48,7 +47,7 @@ const authStateReducer: Reducer<AuthProviderState, AuthProviderAction> = (
 ) => {
   switch (action.type) {
     case ActionType.LOGIN:
-      if (!action.payload.user) {
+      if (!action.payload?.user) {
         throw new Error("User must be defined");
       }
 
@@ -58,11 +57,8 @@ const authStateReducer: Reducer<AuthProviderState, AuthProviderAction> = (
         loading: false,
       };
     case ActionType.LOGOUT:
-      Cookies.remove("user_token");
-
       return {
         ...state,
-        token: undefined,
         user: undefined,
         loading: false,
       };
@@ -109,14 +105,9 @@ export const AuthProvider = ({ children, initialUser }: AuthProviderProps) => {
   };
 
   const logout = () => {
+    api.fetchApi({ url: "/api/auth/logout", method: "POST" });
     dispatch({
       type: ActionType.LOGOUT,
-      payload: {
-        user: {
-          userId: undefined,
-          username: undefined,
-        },
-      },
     });
   };
 
