@@ -1,5 +1,14 @@
 import type { FormProps } from "antd";
-import { Button, Card, Checkbox, Form, Input } from "antd";
+import {
+  Button,
+  Card,
+  Checkbox,
+  Flex,
+  Form,
+  Input,
+  Typography,
+  Image,
+} from "antd";
 import styled from "styled-components";
 import { useAuth } from "../contexts/auth";
 
@@ -26,12 +35,21 @@ const Login = () => {
 
   return (
     <StyledCard>
-      <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+      <Flex
+        justify="center"
+        align="center"
+        vertical
+        style={{ padding: "10px 28px" }}
+      >
+        <Image width={300} src="logo.png" preview={false} />
+        <Typography.Title level={2} style={{ marginBottom: "24px" }}>
+          Iniciar sesión
+        </Typography.Title>
         <Form
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          style={{ width: "100%" }}
+          style={{ width: "100%", textAlign: "center" }}
           initialValues={{ remember: true }}
           onFinish={onFinish}
           autoComplete="off"
@@ -56,22 +74,17 @@ const Login = () => {
           >
             <Input.Password />
           </Form.Item>
-
-          <Form.Item<FieldType>
-            name="remember"
-            valuePropName="checked"
-            label={null}
-          >
-            <Checkbox>Recordarme</Checkbox>
-          </Form.Item>
-
-          <Form.Item label={null}>
-            <Button type="primary" htmlType="submit">
+          <Flex style={{ marginTop: "24px" }} justify="flex-end">
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ alignSelf: "flex-end" }}
+            >
               Iniciar sesión
             </Button>
-          </Form.Item>
+          </Flex>
         </Form>
-      </div>
+      </Flex>
     </StyledCard>
   );
 };
