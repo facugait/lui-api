@@ -7,9 +7,9 @@ import {
   TableProps,
   Tooltip,
 } from "antd";
-import { CheckOutlined, CloseOutlined, EditOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { MenuType } from "../interfaces";
+import { CheckOutlined, CloseOutlined, EditOutlined } from "@ant-design/icons";
 
 const StyledImage = styled(Image)`
   object-fit: cover;
