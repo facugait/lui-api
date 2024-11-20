@@ -1,5 +1,1 @@
-<<<<<<< Updated upstream
 {"root":["./src/app.tsx","./src/interfaces.ts","./src/main.tsx","./src/vite-env.d.ts","./src/components/card.tsx","./src/components/header.tsx","./src/components/menuform.tsx","./src/components/menustable.tsx","./src/pages/addmenu.tsx","./src/pages/editmenu.tsx","./src/pages/home.tsx"],"version":"5.6.2"}
-=======
-{"root":["./src/app.tsx","./src/interfaces.ts","./src/main.tsx","./src/vite-env.d.ts","./src/components/card.tsx","./src/components/header.tsx","./src/components/menustable.tsx","./src/pages/edit.tsx","./src/pages/home.tsx"],"version":"5.6.2"}
->>>>>>> Stashed changes
